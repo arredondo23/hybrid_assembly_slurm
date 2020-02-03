@@ -99,8 +99,8 @@ This script will take the contigs 'uncircularised' from the graph, and take as m
 
 If after this, you still get uncircularised contigs. There are two scenarios possible: 
 
-  * You have a linear plasmid. This can be the case if the contig is a completely independent in the graph. 
-  * You need to increase the coverage. If that is the case, run 'runassembly.sh' with a coverage (flag -c) higher than 20. 
+  * You have a linear plasmid. This can be the case if the contig is a completely independent component in the graph. 
+  * You need to increase the coverage. If that is the case, run 'runassembly.sh' with a coverage (flag -c) higher than 20. This is the case if you have a component in the graph in which you have several contigs connected by a link. 
 
 
 ----
