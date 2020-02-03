@@ -22,7 +22,7 @@ __**Before starting**__
 
 First, you need to retrieve all the files required (snakemake files, yaml files for conda...). You can clone the following repo:
 
-<code> git clone https://gitlab.com/mmb-umcu/faecalis_project.git </code>
+<code> git clone https://gitlab.com/mmb-umcu/hybrid_assembly.git </code>
 
 __Ok, now let's go to the hpc!__ 
 
@@ -32,6 +32,9 @@ Do you have your own miniconda installation? The following command should point 
 
 Then, create a separate environment with snakemake. 
 
+<code> snakemake </code>
+
+This environment is important since it will be the first one used in the pipeline to throw Snakemake. If there is no snakemake, it won't run the assembly. 
 
 __**Modifying bash wrappers with your hpc credentials**__
 
@@ -41,9 +44,9 @@ __**Modifying bash wrappers with your hpc credentials**__
   * runassembly.sh (lines 3 to 11, lines 19 and 20, and line 140)
   * completeassembly.sh (lines 3 to 11, line 19 and 20, and line 139)
 
-** Line 19 points to the your conda environment in which you have installed snakemake **
+**Line 19 points to the your conda environment in which you have installed snakemake**
 
-**Line 20 points to the path in which you have your git repo.** 
+**Line 20 points to the path in which you have your git repo** 
 
 
 
