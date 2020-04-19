@@ -1,0 +1,28 @@
+{
+	"__default__":
+	{
+		"mem": "4G",
+		"time": "1:00:00",
+		"c": 2
+	},
+
+	"trimming":
+	{
+        	"mem": "4G",
+		"time": "2:00:00"
+	},
+
+	"short_read_assembly":
+	{
+		"mem": "5G",
+		"time": "5:00:00",
+		"c": 8
+	},
+
+	"long_read_assembly":
+	{
+		"mem": "10G",
+		"time": "8:00:00",
+		"c": 8
+	}
+}

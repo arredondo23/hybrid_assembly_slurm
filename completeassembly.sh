@@ -1,20 +1,23 @@
 #!/bin/bash
 
-## SGQ queue arguments
-#$ -cwd                          ## change directory to the current directory
-#$ -o /hpc/dla_mm/salonso/Faecalis_project/Faecalis_Snakemake                ## log files
-#$ -e /hpc/dla_mm/salonso/Faecalis_project/Faecalis_Snakemake                ## log files
-#$ -l h_vmem=2G                 ##memory request
-#$ -m e                          ## When to send alerts b=beginning, e=end, a=abort, s=suspend
-#$ -M S.ArredondoAlonso@umcutrecht.nl  ## email address for alerts
-#$ -l h_rt=05:00:00               ##time slot requested
-#$ -N complete_BRA3676
+## SLURM queue arguments
+#SBATCH -J test_completeassembly                                   ## job name
+#SBATCH -t 24:00:00                                                ## time slot requested
+#SBATCH --mem=2G                                                   ## memory request
+#SBATCH -o /hpc/dla_mm/rsilva/grimoire/hybrid_assembly/%x-%j.out   ## log files
+#SBATCH -e /hpc/dla_mm/rsilva/grimoire/hybrid_assembly/%x-%j.err   ## log files
+#SBATCH --mail-type=END                                            ## When to send alerts b=beginning, e=end, a=abort, s=suspend
+#SBATCH --mail-user=R.SilvaMeneses@umcutrecht.nl                   ## email address for alerts
 
 
 ##to debug
 #set -e
 #set -v
 #set -x
+
+#source activate snakemake
+conda activate snakemake
+cd /hpc/dla_mm/rsilva/grimoire/hybrid_assembly
 
 ########################################
 ## A bash script to run the gplas pipeline
@@ -135,7 +138,7 @@ snakemake \
  --keep-going \
  --restart-times 1\
  --use-conda \
+ --cluster-config config.json \
  --cluster \
- 'qsub -V -cwd -l h_vmem=32G -l h_rt=10:00:00 -e /hpc/dla_mm/salonso/Faecalis_project/Faecalis_Snakemake -o /hpc/dla_mm/salonso/Faecalis_project/Faecalis_Snakemake -M S.ArredondoAlonso@umcutrecht.nl' \
+ 'sbatch --mem={cluster.mem} -t {cluster.time} -c {cluster.c} -e ./completeassembly-%j.err -o ./completeassembly-%j.out --mail-user=R.SilvaMeneses@umcutrecht.nl' \
  --jobs 10 2>&1
-

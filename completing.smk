@@ -105,6 +105,6 @@ rule long_read_assembly:
     shell:
         "unicycler -1 {input.trimfw} -2 {input.trimrv} -l {input.combi_long_reads} \
          --mode {params.mode} --start_genes replicon_database.fasta --keep 2 \
-         -o {output.long_unicycler_dir}"       
+         --threads 8 -o {output.long_unicycler_dir}"       
         
 

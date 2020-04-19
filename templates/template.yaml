@@ -1,0 +1,8 @@
+forward: "${forward}"
+reverse: "${reverse}"
+long: "${long}"
+phred_score: "${phred_score}"
+unicycler_mode: "${mode}"
+name: "${name}"
+coverage: "${coverage}"
+
