@@ -1,0 +1,8 @@
+forward: "BRA3676_analysis/Illumina/26975_1#63_1.fastq.gz"
+reverse: "BRA3676_analysis/Illumina/26975_1#63_2.fastq.gz"
+long: "BRA3676_analysis/barcode23/fastq_runid_2b7004a23396843417ebe363d5e7cf60da2ee8e3_0.fastq.gz"
+phred_score: "20"
+unicycler_mode: "normal"
+name: "E01049"
+coverage: "20"
+

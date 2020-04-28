@@ -31,7 +31,7 @@ rule short_read_assembly:
     log:
         "logs/{name}_log_ontpart.txt"
     shell:
-        "unicycler -1 trimmed_reads/{params.name}_trimgalore/{params.name}_val_1.fq.gz -2 trimmed_reads/{params.name}_trimgalore/{params.name}_val_2.fq.gz --mode {params.mode} --keep 2 -o {output.unicycler_dir}"
+        "unicycler -1 trimmed_reads/{params.name}_trimgalore/{params.name}_val_1.fq.gz -2 trimmed_reads/{params.name}_trimgalore/{params.name}_val_2.fq.gz --mode {params.mode} --keep 2 --threads 8 -o {output.unicycler_dir}"
 
 rule bioawk_genome_size:
     input:
@@ -109,7 +109,7 @@ rule long_read_assembly:
     log:
         "logs/{name}_log_ontpart.txt"
     shell:
-        "unicycler -1 trimmed_reads/{params.name}_trimgalore/{params.name}_val_1.fq.gz -2 trimmed_reads/{params.name}_trimgalore/{params.name}_val_2.fq.gz -l {input.filt_long_reads} --mode {params.mode} --start_genes replicon_database.fasta --keep 2 -o {output.long_unicycler_dir}"
+        "unicycler -1 trimmed_reads/{params.name}_trimgalore/{params.name}_val_1.fq.gz -2 trimmed_reads/{params.name}_trimgalore/{params.name}_val_2.fq.gz -l {input.filt_long_reads} --mode {params.mode} --start_genes replicon_database.fasta --keep 2 --threads 8 -o {output.long_unicycler_dir}"
 
 
 

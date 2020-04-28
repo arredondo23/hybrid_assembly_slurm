@@ -43,8 +43,8 @@ __**Modifying bash wrappers with your hpc credentials**__
 
 **IMPORTANT!** There are two scripts that you need to modify by replacing the paths in which the logs from hpc jobs are going to be stored and also the mail that is going to use. Line 140 and 139 from the below files can also be changed depending on the job requirements that you need, if the long-read assembly is going to take a lot of time you can increase the time and memory in these lines.  
 
-  * runassembly.sh (lines 3 to 11, lines 19 and 20, and line 140)
-  * completeassembly.sh (lines 3 to 11, line 19 and 20, and line 139)
+  * runassembly.sh (lines 4 to 10, lines 19 and 20, and line 141)
+  * completeassembly.sh (lines 4 to 10, line 19 and 20, and line 143)
 
 **Line 19 points to the your conda environment in which you have installed snakemake**
 
@@ -59,7 +59,7 @@ __**Running a hybrid assembly**__
 
 So if you want to run the pipeline, we created a bash wrapper that you should use in the following way:
 
-<code> qsub runassembly.sh -f path_forward_Illumina.fastq.gz -r path_reverse_Illumina.fastq.gz -l path_long_reads.fastq.gz -c 20 -p 20 -o name_isolate </code>
+<code> sbatch runassembly.sh -f path_forward_Illumina.fastq.gz -r path_reverse_Illumina.fastq.gz -l path_long_reads.fastq.gz -c 20 -p 20 -n name_isolate </code>
 
 The arguments are the following:
 
@@ -67,7 +67,7 @@ The arguments are the following:
   * '-r'. Path to the short reverse reads
   * '-l'. Path to the long reads
   * '-c'. Integer. Coverage desired to filter out ONT reads. Higher coverage will take more time since Unicycler will need to map more reads into the graph. Start with something around 20 and only repeat with a higher coverage if you get some non-circular contigs in the ends.  
-  * '-o'. Name of the isolate
+  * '-n'. Name of the isolate
 
 Basically this will generate: 
 
@@ -93,7 +93,7 @@ __**Uncompleted assemblies**__
 
 If you get uncircularised contigs in the final assembly, you can run the second bash script: 
 
-<code> qsub completeassembly.sh -f path_forward_Illumina.fastq.gz -r path_reverse_Illumina.fastq.gz -l path_long_reads.fastq.gz -c 5 -p 20 -o name_isolate </code>
+<code> sbatch completeassembly.sh -f path_forward_Illumina.fastq.gz -r path_reverse_Illumina.fastq.gz -l path_long_reads.fastq.gz -c 5 -p 20 -n name_isolate </code>
 
 This script will take the contigs 'uncircularised' from the graph, and take as many reads as indicated in the coverage (in the example 5). These reads will be combined with the reads that we used before. In this way we hope to put some extra reads in the uncompleted path that can help Unicycler to bridge it. The new results will be present as: 
 

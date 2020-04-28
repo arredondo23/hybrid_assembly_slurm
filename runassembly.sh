@@ -1,23 +1,23 @@
 #!/bin/bash
 
-## SGQ queue arguments
-#$ -cwd                          ## change directory to the current directory
-#$ -o /hpc/dla_mm/salonso/Faecalis_project/Faecalis_Snakemake                ## log files
-#$ -e /hpc/dla_mm/salonso/Faecalis_project/Faecalis_Snakemake                ## log files
-#$ -l h_vmem=2G                 ##memory request
-#$ -m e                          ## When to send alerts b=beginning, e=end, a=abort, s=suspend
-#$ -M S.ArredondoAlonso@umcutrecht.nl  ## email address for alerts
-#$ -l h_rt=10:00:00               ##time slot requested
-#$ -N BRA3677
+## SLURM queue arguments
+#SBATCH -J test_runassembly                                        ## job name
+#SBATCH -t 24:00:00                                                ## time slot requested
+#SBATCH --mem=2G                                                   ## memory request
+#SBATCH -o /hpc/dla_mm/rsilva/grimoire/hybrid_assembly/%x-%j.out   ## log files
+#SBATCH -e /hpc/dla_mm/rsilva/grimoire/hybrid_assembly/%x-%j.err   ## log files
+#SBATCH --mail-type=END                                            ## When to send alerts [BEGIN, END, FAIL]
+#SBATCH --mail-user=R.SilvaMeneses@umcutrecht.nl                   ## email address for alerts
+
 
 ##to debug
 #set -e
 #set -v
 #set -x
 
-
-conda activate hybrid_assembly
-cd /hpc/dla_mm/salonso/Faecalis_project/Faecalis_Snakemake
+#source activate snakemake
+conda activate snakemake
+cd /hpc/dla_mm/rsilva/grimoire/hybrid_assembly
 
 
 while getopts ":f:r::l:p:m:c:n:h" opt; do
@@ -134,9 +134,10 @@ snakemake \
  --forceall \
  -p long_read_assembly/"$name"_unicycler \
  --keep-going \
- --restart-times 5\
+ --restart-times 5 \
  --use-conda \
+ --cluster-config config.json \
  --cluster \
- 'qsub -V -cwd -l h_vmem=32G -l h_rt=07:00:00 -e /hpc/dla_mm/salonso/Faecalis_project/Faecalis_Snakemake -o /hpc/dla_mm/salonso/Faecalis_project/Faecalis_Snakemake -M S.ArredondoAlonso@umcutrecht.nl' \
+ 'sbatch --mem={cluster.mem} -t {cluster.time} -c {cluster.c} -e ./runassembly-%j.err -o ./runassembly-%j.out --mail-user=R.SilvaMeneses@umcutrecht.nl' \
  --jobs 10 2>&1
 
