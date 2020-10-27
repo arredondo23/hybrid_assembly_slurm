@@ -1,23 +1,22 @@
 #!/bin/bash
 
 ## SLURM queue arguments
-#SBATCH -J test_runassembly                                        ## job name
-#SBATCH -t 24:00:00                                                ## time slot requested
+#SBATCH -J sergio_hybrid_assembly                                        ## job name
+#SBATCH -t 12:00:00                                                ## time slot requested
 #SBATCH --mem=2G                                                   ## memory request
-#SBATCH -o /hpc/dla_mm/rsilva/grimoire/hybrid_assembly/%x-%j.out   ## log files
-#SBATCH -e /hpc/dla_mm/rsilva/grimoire/hybrid_assembly/%x-%j.err   ## log files
+#SBATCH -o /data1/sergioar/hybrid_assembly_slurm/logs/%x-%j.out   ## log files
+#SBATCH -e /data1/sergioar/hybrid_assembly_slurm/logs/%x-%j.err   ## log files
 #SBATCH --mail-type=END                                            ## When to send alerts [BEGIN, END, FAIL]
-#SBATCH --mail-user=R.SilvaMeneses@umcutrecht.nl                   ## email address for alerts
-
+#SBATCH --mail-user=s.a.alonso@medisin.uio.no                   ## email address for alerts
 
 ##to debug
 #set -e
 #set -v
 #set -x
 
-#source activate snakemake
+
+source ~/.bashrc
 conda activate snakemake
-cd /hpc/dla_mm/rsilva/grimoire/hybrid_assembly
 
 
 while getopts ":f:r::l:p:m:c:n:h" opt; do
@@ -65,28 +64,24 @@ done
 
 if [ -z "$forward" ];
 then
-    ./gplas.sh -h
     echo -e "\n Error: Oops, it seems that you are missing the Illumina forward files.\n"
     exit
 fi
 
 if [ -z "$reverse" ];
 then
-    ./gplas.sh -h
     echo -e "\n Error: Oops, it seems that you are missing the Illumina reverse files.\n"
     exit
 fi
 
 if [ -z "$long" ];
 then
-    ./gplas.sh -h
     echo -e "\n Error: Oops, it seems that you are missing the ONT reads.\n"
     exit
 fi
 
 if [ -z "$coverage" ];
 then
-    ./gplas.sh -h
     echo -e "\n Error: Oops, it seems that you are missing the coverage that you want to use to subset the ONT reads.\n"
     exit
 fi
@@ -134,10 +129,10 @@ snakemake \
  --forceall \
  -p long_read_assembly/"$name"_unicycler \
  --keep-going \
- --restart-times 5 \
+ --restart-times 2 \
  --use-conda \
  --cluster-config config.json \
  --cluster \
- 'sbatch --mem={cluster.mem} -t {cluster.time} -c {cluster.c} -e ./runassembly-%j.err -o ./runassembly-%j.out --mail-user=R.SilvaMeneses@umcutrecht.nl' \
+ 'sbatch --mem={cluster.mem} -t {cluster.time} -c {cluster.c} -e ./runassembly-%j.err -o ./runassembly-%j.out --mail-user=s.a.alonso@medisin.uio.no' \
  --jobs 10 2>&1
 
