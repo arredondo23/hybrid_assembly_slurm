@@ -74,10 +74,21 @@ rule total_bp:
         "genome_size=$(cat {input.sum_genome})"
         " && expr {params.desired_coverage} \* $genome_size > {output.desired_bp}"
 
+rule porechop:
+    output:
+        porechop_reads="porechop/{name}_porechop_long.fastq.gz"
+    params:
+        name=config["name"],
+        long_reads=config["long"]
+    message:
+        "Trimming ONT barcodes"
+    shell:
+        "porechop -i {params.long_reads} -o {output.porechop_reads}"
+
 rule filtlong:
     input:
         trim=directory("trimmed_reads/{name}_trimgalore"),
-        long_reads=config["long"],
+        long_reads="porechop/{name}_porechop_long.fastq.gz",
         desired_bp="bioawk/{name}_desired_bp.txt"
     params:
         name=config["name"]
@@ -110,7 +121,3 @@ rule long_read_assembly:
         "logs/{name}_log_ontpart.txt"
     shell:
         "unicycler -1 trimmed_reads/{params.name}_trimgalore/{params.name}_val_1.fq.gz -2 trimmed_reads/{params.name}_trimgalore/{params.name}_val_2.fq.gz -l {input.filt_long_reads} --mode {params.mode} --start_genes replicon_database.fasta --keep 2 --threads 8 -o {output.long_unicycler_dir}"
-
-
-
-
