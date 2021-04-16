@@ -22,7 +22,7 @@ __**Before starting**__
 
 First, you need to retrieve all the files required (snakemake files, yaml files for conda...). You can clone the following repo:
 
-<code> git clone https://gitlab.com/mmb-umcu/hybrid_assembly.git </code>
+<code> git clone https://github.com/arredondo23/hybrid_assembly_slurm.git </code>
 
 __Ok, now let's go to the hpc!__ 
 
