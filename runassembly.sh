@@ -1,21 +1,11 @@
 #!/bin/bash
 
-## SLURM queue arguments
-#SBATCH -J sergio_hybrid_assembly                                        ## job name
-#SBATCH -t 12:00:00                                                ## time slot requested
-#SBATCH --mem=2G                                                   ## memory request
-#SBATCH -o /data1/sergioar/hybrid_assembly_slurm/logs/%x-%j.out   ## log files
-#SBATCH -e /data1/sergioar/hybrid_assembly_slurm/logs/%x-%j.err   ## log files
-#SBATCH --mail-type=END                                            ## When to send alerts [BEGIN, END, FAIL]
-#SBATCH --mail-user=s.a.alonso@medisin.uio.no                   ## email address for alerts
-
 ##to debug
 #set -e
 #set -v
 #set -x
 
 
-source ~/.bashrc
 conda activate snakemake
 
 
@@ -47,14 +37,12 @@ while getopts ":f:r::l:p:m:c:n:h" opt; do
      help=$OPTARG
      ;;
    \?)
-     ./gplas.sh -h
      echo -e "\n"
      echo "Invalid option: -$OPTARG" >&2
      echo "Check that you have provided all the inputs"
      exit 1
      ;;
    :)
-     ./gplas.sh -h
      echo -e "\n"
      echo "Error: Option -$OPTARG requires an argument." >&2
      exit 1
@@ -120,19 +108,33 @@ cp templates/template.yaml templates/"$name"_template.yaml
 
 #snakemake -n --use-conda -s assembly.smk -p long_read_assembly/"$name"_unicycler 
 
+snakemake \
+ --unlock \
+ --configfile templates/"$name"_assembly.yaml \
+ --snakefile assembly.smk \
+ --latency-wait 60 \
+ --verbose \
+ -p long_read_assembly/"$name"_unicycler \
+ --keep-going \
+ --restart-times 1 \
+ --use-conda \
+ --cluster-config config_lsf.json \
+ --cluster \
+ 'bsub -R {cluster.resources} -M {cluster.memory} -q {cluster.queue} -W {cluster.time} -J {cluster.name} -n {cluster.nCPUs} -e {cluster.error} -o {cluster.output}' \
+ --jobs 10 2>&1
+
 
 snakemake \
  --configfile templates/"$name"_assembly.yaml \
  --snakefile assembly.smk \
  --latency-wait 60 \
  --verbose \
- --forceall \
  -p long_read_assembly/"$name"_unicycler \
  --keep-going \
- --restart-times 2 \
+ --restart-times 1 \
  --use-conda \
- --cluster-config config.json \
+ --cluster-config config_lsf.json \
  --cluster \
- 'sbatch --mem={cluster.mem} -t {cluster.time} -c {cluster.c} -e ./runassembly-%j.err -o ./runassembly-%j.out --mail-user=s.a.alonso@medisin.uio.no' \
+ 'bsub -R {cluster.resources} -M {cluster.memory} -q {cluster.queue} -W {cluster.time} -J {cluster.name} -n {cluster.nCPUs} -e {cluster.error} -o {cluster.output}' \
  --jobs 10 2>&1
 
