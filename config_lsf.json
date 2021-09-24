@@ -1,0 +1,36 @@
+{
+    "__default__" :
+    {
+        "queue"     : "normal",
+        "nCPUs"     : "4",
+        "memory"    : 4000,
+        "resources" : "\"select[mem>4000] rusage[mem=4000] span[hosts=1]\"",
+        "time"      : "02:00",
+        "name"      : "{rule}.{wildcards}",
+        "output"    : "logs/{rule}.{wildcards}.out",
+        "error"     : "logs/{rule}.{wildcards}.err"
+    },
+    "shortreadassembly" :
+    {
+        "queue"     : "normal",
+        "nCPUs"     : "16",
+        "memory"    : 5000,
+        "resources" : "\"select[mem>5000] rusage[mem=5000] span[hosts=1]\"",
+        "time"      : "05:00",
+        "name"      : "{rule}.{wildcards}",
+        "output"    : "logs/{rule}.{wildcards}.out",
+        "error"     : "logs/{rule}.{wildcards}.err"
+    },
+    "longreadassembly" :
+    {
+        "queue"     : "long",
+        "nCPUs"     : "32",
+        "memory"    : 20000,
+        "resources" : "\"select[mem>20000] rusage[mem=20000] span[hosts=1]\"",
+        "time"      : "08:00",
+        "name"      : "{rule}.{wildcards}",
+        "output"    : "logs/{rule}.{wildcards}.out",
+        "error"     : "logs/{rule}.{wildcards}.err"
+    },
+
+}
