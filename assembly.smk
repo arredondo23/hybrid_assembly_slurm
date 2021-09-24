@@ -16,7 +16,7 @@ rule trimming:
     shell:
         "trim_galore --paired --quality {params.phred} --basename {params.name} --output_dir {output.trim} {input.fw} {input.rv}"
 
-rule short_read_assembly:
+rule shortreadassembly:
     input:
         trim=directory("trimmed_reads/{name}_trimgalore")
     output:
@@ -31,9 +31,9 @@ rule short_read_assembly:
     log:
         "logs/{name}_log_ontpart.txt"
     shell:
-        "unicycler -1 trimmed_reads/{params.name}_trimgalore/{params.name}_val_1.fq.gz -2 trimmed_reads/{params.name}_trimgalore/{params.name}_val_2.fq.gz --mode {params.mode} --keep 2 --threads 8 -o {output.unicycler_dir}"
+        "unicycler -1 trimmed_reads/{params.name}_trimgalore/{params.name}_val_1.fq.gz -2 trimmed_reads/{params.name}_trimgalore/{params.name}_val_2.fq.gz --mode {params.mode} --threads 16 --keep 2 -o {output.unicycler_dir}"
 
-rule bioawk_genome_size:
+rule bioawkgenomesize:
     input:
         contigs=directory("short_read_assembly/{name}_unicycler")
     output:
@@ -47,7 +47,7 @@ rule bioawk_genome_size:
     shell:
         """bioawk -c fastx '{{ print $name, length($seq) }}' < short_read_assembly/{params.name}_unicycler/assembly.fasta > {output.seq_length} """
 
-rule sum_genome_size:
+rule sumgenomesize:
     input:
         seq_length="bioawk/{name}_seq_length.txt"
     output:
@@ -59,7 +59,7 @@ rule sum_genome_size:
     shell:
         """awk '{{ sum += $2; }} END {{ print sum; }}' {input.seq_length} > {output.sum_genome} """
 
-rule total_bp:
+rule totalbp:
     input:
         sum_genome="bioawk/{name}_total_genome.txt"
     output:
@@ -74,7 +74,7 @@ rule total_bp:
         "genome_size=$(cat {input.sum_genome})"
         " && expr {params.desired_coverage} \* $genome_size > {output.desired_bp}"
 
-rule porechop:
+rule porechop:	
     output:
         porechop_reads="porechop/{name}_porechop_long.fastq.gz"
     params:
@@ -104,7 +104,7 @@ rule filtlong:
         --min_length 1000 --keep_percent 90 --mean_q_weight 20 \
         --target_bases $size {input.long_reads} | gzip > {output.gzip_reads}"
 
-rule long_read_assembly:
+rule longreadassembly:
     input:
         trim=directory("trimmed_reads/{name}_trimgalore"),
         filt_long_reads="filtlong/{name}_filt_long.fastq.gz"
@@ -120,4 +120,4 @@ rule long_read_assembly:
     log:
         "logs/{name}_log_ontpart.txt"
     shell:
-        "unicycler -1 trimmed_reads/{params.name}_trimgalore/{params.name}_val_1.fq.gz -2 trimmed_reads/{params.name}_trimgalore/{params.name}_val_2.fq.gz -l {input.filt_long_reads} --mode {params.mode} --start_genes replicon_database.fasta --keep 2 --threads 8 -o {output.long_unicycler_dir}"
+        "unicycler -1 trimmed_reads/{params.name}_trimgalore/{params.name}_val_1.fq.gz -2 trimmed_reads/{params.name}_trimgalore/{params.name}_val_2.fq.gz -l {input.filt_long_reads} --mode {params.mode} --threads 32 --keep 2 -o {output.long_unicycler_dir}"
