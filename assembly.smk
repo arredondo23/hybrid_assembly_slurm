@@ -9,8 +9,6 @@ rule trimming:
         name=config["name"]
     message:
         "Trimming the short-reads {input}"
-    conda:
-        "hybrid_assembly.yaml"
     log:
         "logs/{name}_log_ontpart.txt"
     shell:
@@ -26,8 +24,6 @@ rule shortreadassembly:
         name=config["name"]
     message:
         "Short read assembly using trimmed reads {input}"
-    conda:
-        "hybrid_assembly.yaml"
     log:
         "logs/{name}_log_ontpart.txt"
     shell:
@@ -40,8 +36,6 @@ rule bioawkgenomesize:
         seq_length="bioawk/{name}_seq_length.txt"
     params:
         name=config["name"]
-    conda:
-        "hybrid_assembly.yaml"
     message:
         "Calculating the genome size based on the assembly given by Unicycler using short-reads"
     shell:
@@ -52,8 +46,6 @@ rule sumgenomesize:
         seq_length="bioawk/{name}_seq_length.txt"
     output:
         sum_genome="bioawk/{name}_total_genome.txt"
-    conda:
-        "hybrid_assembly.yaml"
     message:
         "Sum of the genome size based on the assembly given by Unicycler using short-reads"
     shell:
@@ -66,8 +58,6 @@ rule totalbp:
         desired_bp="bioawk/{name}_desired_bp.txt"
     params:
         desired_coverage=config["coverage"]
-    conda:
-        "hybrid_assembly.yaml"
     message:
         "Calculating the bp desired based on the coverage"
     shell:
@@ -92,8 +82,6 @@ rule filtlong:
         desired_bp="bioawk/{name}_desired_bp.txt"
     params:
         name=config["name"]
-    conda:
-        "hybrid_assembly.yaml"
     output:
         gzip_reads="filtlong/{name}_filt_long.fastq.gz"
     message:
@@ -115,8 +103,6 @@ rule longreadassembly:
         name=config["name"]
     message:
         "Using Unicycler with long reads"
-    conda:
-        "hybrid_assembly.yaml"
     log:
         "logs/{name}_log_ontpart.txt"
     shell:
