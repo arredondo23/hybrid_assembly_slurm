@@ -6,7 +6,7 @@
 #set -x
 
 
-conda activate snakemake
+conda activate hybrid_assembly
 
 
 while getopts ":f:r::l:p:m:c:n:h" opt; do

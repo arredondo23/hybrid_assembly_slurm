@@ -31,8 +31,7 @@ Do you have your own miniconda installation? The following command should point 
 <code> which conda </code> 
 
 Then, create a separate environment with snakemake. 
-<code> conda activate my_env_with_snakemake </code>
-<code> snakemake </code>
+<code> conda env create -f hybrid_assembly.yml </code>
 
 This environment is important since it will be the first one used in the pipeline to throw Snakemake. If there is no snakemake, it won't run the assembly. 
 
